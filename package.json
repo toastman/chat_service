@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "name": "myauth",
   "version": "1.0.0",
   "description": "",
@@ -24,4 +25,16 @@
   "devDependencies": {
     "morgan": "^1.8.1"
   }
+=======
+  "name": "openshift-cartridge-nodejs-template",
+  "version": "1.0.1",
+  "description": "Custom Node.js cartridge for OpenShift - sample application",
+  "private": true,
+  "main": "start.js",
+  "scripts": {
+    "start": "node --use_strict start.js"
+  },
+  "author": "Ionut-Cristian Florescu <ionut.florescu@gmail.com>",
+  "license": "ISC"
+>>>>>>> d7f3cf3bb82efb8217128bb4e26fc98556cf8a5b
 }
