@@ -1,6 +1,5 @@
 const app = require('express')()
 const routes = require('./routes.js')
-const serverPort = 3000
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
@@ -9,7 +8,9 @@ const io = require('socket.io')(http)
 const jwt = require('jsonwebtoken')
 const config = require('./config.json')
 
-const socketioJwt = require('socketio-jwt');
+const socketioJwt = require('socketio-jwt')
+const server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000;
+const server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1';
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -50,6 +51,6 @@ io.sockets
     // }
   })
 
-http.listen(serverPort, () => {
-  console.log(`Auth servise listening on port ${serverPort}!`)
+const server = http.listen(server_port, server_ip_address, () => {
+  console.log(`Auth servise running on http://${server.address().address}${server.address().port}`)
 })
