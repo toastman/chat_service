@@ -14,12 +14,10 @@
     "cors": "^2.8.1",
     "express": "^4.15.2",
     "jsonwebtoken": "^7.3.0",
+    "morgan": "^1.8.1",
     "mongodb": "^2.2.25",
     "redis": "^2.7.1",
     "socket.io": "^1.7.3",
     "socketio-jwt": "^4.5.0"
-  },
-  "devDependencies": {
-    "morgan": "^1.8.1"
   }
 }
