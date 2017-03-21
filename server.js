@@ -9,8 +9,8 @@ const jwt = require('jsonwebtoken')
 const config = require('./config.json')
 
 const socketioJwt = require('socketio-jwt')
-const server_port = process.env.OPENSHIFT_NODEJS_PORT || 3002
-const server_ip_address = process.env.OPENSHIFT_NODEJS_IP || '127.0.0.1'
+const server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
+const server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -23,34 +23,28 @@ io.sockets
     callback: false
   }))
   .on('authenticated', socket => {
-    console.log('hello! ', socket.decoded_token.username)
+    socket.emit('joined', socket.decoded_token)
 
     socket
-      .on('logout', () => {
-        console.log('Bye! ', socket.decoded_token.username)
-        socket.disconnect()
-      })
-      .on('unauthorized', (error) => {
-        if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
-          // redirect user to login page perhaps?
-          console.log("User's token has expired");
-        }
-      })
-      .on('chat message', msg => {
-        console.log('decoded_token: ', socket.decoded_token)
+      .on('logout', socket.disconnect)
+      .on('unauthorized', unauthorizedHandler)
+      .on('chat message', chatMessageHandler)
 
-        console.log(`Server get message from ${socket.decoded_token.username}:`, msg)
-        io.emit('chat message', `User ${socket.decoded_token.username} say: ${msg}`)
+    function unauthorizedHandler(error) {
+      if (error.data.type == 'UnauthorizedError' || error.data.code == 'invalid_token') {
+        // redirect user to login page perhaps?
+        console.log("User's token has expired");
+      }
+    }
+
+    function chatMessageHandler(msg) {
+      io.emit('chat message', {
+        msg,
+        user: socket.decoded_token
       })
-  })
-  .on('unauthorized', error => {
-    console.log('Users token has expired', error.data)
-    // if (error.data.type == "UnauthorizedError" || error.data.code == "invalid_token") {
-    //   // redirect user to login page perhaps?
-    //   console.log("User's token has expired")
-    // }
+    }
   })
 
 const server = http.listen(server_port, server_ip_address, () => {
-  console.log(`Auth servise running on http://${server.address().address}${server.address().port}`)
+  console.log(`Auth servise running on http://${server.address().address}:${server.address().port}`)
 })
