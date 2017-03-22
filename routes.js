@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
         if (!user || err) {
           res.status(404).send()
         } else {
-          const token = jwt.sign(user, config.jwt_secret)
+          const token = jwt.sign(user, config.jwt_secret, { noTimestamp: true })
 
           res.status(200).json({
             user,

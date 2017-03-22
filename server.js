@@ -23,12 +23,15 @@ io.sockets
     callback: false
   }))
   .on('authenticated', socket => {
-    socket.emit('join', socket.decoded_token)
+    socket.emit('join', {
+      user: socket.decoded_token,
+      time: Date.now()
+    })
 
     socket
-      .on('leave', socket.disconnect)
       .on('unauthorized', unauthorizedHandler)
       .on('message', chatMessageHandler)
+      .on('disconnect', disconnectHandler)
 
     function unauthorizedHandler(error) {
       if (error.data.type == 'UnauthorizedError' || error.data.code == 'invalid_token') {
@@ -38,9 +41,17 @@ io.sockets
     }
 
     function chatMessageHandler(msg) {
-      io.emit('chat message', {
+      io.emit('message', {
         msg,
-        user: socket.decoded_token
+        user: socket.decoded_token,
+        time: Date.now()
+      })
+    }
+
+    function disconnectHandler() {
+      io.emit('leave', {
+        user: socket.decoded_token,
+        time: Date.now()
       })
     }
   })

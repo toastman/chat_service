@@ -78,7 +78,7 @@ Here you can get all registered users and all available info for them.
 ```
   [
     {
-        "username":"someuser@gmail.com",
+        "username": "someuser@gmail.com",
         ... all data that you send during signup
     },
     ...
@@ -102,20 +102,35 @@ Now server support next types of messages:
 ```javascript
   const socket = io.connect('http://eleksfrontendcamp-mockapitron.rhcloud.com');
 
-  socket.on('message', msg => {
-    printMessage(msg);
-  });
+  socket.on('message', msg => { ... });
 
-  socket.on('join', msg => {
-    printMessage(msg);
-  });
+  socket.on('join', msg => { ... });
 
-  socket.on('leave', msg => {
-    printMessage(msg);
-  });
+  socket.on('leave', msg => { ... });
 ```
 
-
+### Data format for events:
+* `message`
+    ```javascript
+    {
+        "msg": "Message text",
+        "user": {
+            "username": "someuser@gmail.com",
+            ... all data that you send during signup
+        },
+        "time": 1490172495627 // UTC timestamp in milliseconds
+    }
+    ```
+* `join` and `leave`
+    ```javascript
+    {
+        "user": {
+            "username": "someuser@gmail.com",
+            ... all data that you send during signup
+        },
+        "time": 1490172495627 // UTC timestamp in milliseconds
+    }
+    ```
 
 <style>
     body {
