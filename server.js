@@ -12,6 +12,7 @@ const socketioJwt = require('socketio-jwt')
 const server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
 const server_ip_address = process.env.OPENSHIFT_NODEJS_IP || 'localhost'
 
+app.use(express.static('public'))
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('tiny'))
