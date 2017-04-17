@@ -8,6 +8,7 @@ const http = require('http').Server(app)
 const io = require('socket.io')(http)
 const jwt = require('jsonwebtoken')
 const config = require('./config.json')
+const mongoConnected = require('./db.js')
 
 const socketioJwt = require('socketio-jwt')
 const server_port = process.env.OPENSHIFT_NODEJS_PORT || 3000
@@ -43,10 +44,20 @@ io.sockets
     }
 
     function chatMessageHandler(msg) {
-      io.emit('message', {
+      const msgObj = {
         msg,
         user: socket.decoded_token,
         time: Date.now()
+      }
+
+      io.emit('message', msgObj)
+
+      mongoConnected.then(db => {
+        db
+          .collection('messages')
+          .insert(msgObj, err => {
+            if (err) io.emit('error', err)
+          })
       })
     }
 

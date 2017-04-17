@@ -31,6 +31,13 @@ router.post('/login', (req, res) => {
 })
 
 router.post('/signup', (req, res) => {
+  if (!req.body.username || !req.body.password) {
+    res.status(400).json({
+      status: 400,
+      message: 'Please provide valid username and password.'
+    })
+  }
+
   mongoConnected.then(db => {
     db
       .collection('users')
@@ -47,6 +54,21 @@ router.get('/users', (req, res) => {
       .collection('users').find({}, { _id: 0, password: 0 })
       .toArray((err, users) => {
         res.send(users)
+      })
+  })
+})
+
+router.get('/messages', (req, res) => {
+  mongoConnected.then(db => {
+    let dbFindParams = {}
+    if (req.query.from || req.query.to) dbFindParams.time = {}
+    if (req.query.from) dbFindParams.time.$gte = +req.query.from
+    if (req.query.to) dbFindParams.time.$lte = +req.query.to
+
+    db
+      .collection('messages').find(dbFindParams, { _id: 0 })
+      .toArray((err, msgs) => {
+        res.send(msgs)
       })
   })
 })

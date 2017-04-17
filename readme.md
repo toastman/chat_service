@@ -85,6 +85,29 @@ Here you can get all registered users and all available info for them.
   ]
 ```
 
+## Getting all messages
+Here you can get all chat message history.
+With additional parameters **from, to** you can specify time range for the messages.
+e.g. /messages?from=1492426339568&to=1492427071894
+
+
+**Request:**
+
+[GET] http://eleksfrontendcamp-mockapitron.rhcloud.com/messages
+
+**Response:**
+
+```
+    [
+        {
+            "msg": String,
+            "user": UsedDataObject,
+            "time": Timestamp
+        }
+        ...
+    ]
+```
+
 ## Sending messages
 
 For sending and receiving messages across sockets
